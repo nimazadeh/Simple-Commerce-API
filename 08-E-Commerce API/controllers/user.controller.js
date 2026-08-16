@@ -1,6 +1,7 @@
 const { StatusCodes } = require("http-status-codes");
 const User = require("../models/User");
 const CustomError = require("../errors");
+const { createTokenUser, attachCookiesToResponse } = require("../utils");
 
 const getAllUser = async (req, res) => {
   const users = await User.find({ role: "user" }).select("-password");
@@ -28,20 +29,24 @@ const updateUser = async (req, res) => {
   const { email, name } = req.body;
 
   if (!email || !name) {
-    throw new CustomError.BadRequestError("please provide name and email");
+    throw new CustomError.BadRequestError("please provide all values");
   }
 
   const user = await User.findOneAndUpdate(
     { _id: req.user.userId },
     { email, name },
-    { new: true, runValidators: true, returnDocument: true },
+    { returnDocument: "after", runValidators: true },
   );
 
   if (!user) {
     throw new CustomError.NotFoundError("User not found");
   }
 
-  res.status(StatusCodes.OK).json({ user });
+  const tokenUser = createTokenUser(user);
+
+  attachCookiesToResponse({ res, user: tokenUser });
+
+  res.status(StatusCodes.OK).json({ user: tokenUser });
 };
 
 const updateUserPassword = async (req, res) => {
