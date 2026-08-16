@@ -47,7 +47,7 @@ const updateUserPassword = async (req, res) => {
 
   await user.save();
 
-  res.status(StatusCodes.OK).json({});
+  res.status(StatusCodes.OK).json({msg: 'Success! Password Updated.'});
 };
 
 module.exports = {
