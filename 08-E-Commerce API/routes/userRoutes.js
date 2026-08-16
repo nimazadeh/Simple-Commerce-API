@@ -6,17 +6,20 @@ const {
   updateUser,
   updateUserPassword,
 } = require("../controllers/user.controller");
-const { authenticateUser: authUser } = require("../middleware/authentication");
+const {
+  authenticateUser,
+  authorizePermissions,
+} = require("../middleware/authentication");
 
 const router = Router();
 
-router.get("/", authUser, getAllUser);
+router.get("/", authenticateUser, authorizePermissions, getAllUser);
 
 router.get("/showMe", showCurrentUser);
 
 router.patch("/updateUser", updateUser);
 router.patch("/updateUserPassword", updateUserPassword);
 
-router.get("/:id", authUser, getSingleUser);
+router.get("/:id", authenticateUser, authorizePermissions,getSingleUser);
 
 module.exports = router;
