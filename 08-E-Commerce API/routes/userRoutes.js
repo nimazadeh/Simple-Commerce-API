@@ -15,7 +15,7 @@ const router = Router();
 
 router.get("/", authenticateUser, authorizePermissions("admin"), getAllUser);
 
-router.get("/showMe", showCurrentUser);
+router.get("/showMe", authenticateUser, showCurrentUser);
 
 router.patch("/updateUser", updateUser);
 router.patch("/updateUserPassword", updateUserPassword);
