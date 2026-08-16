@@ -25,7 +25,23 @@ const showCurrentUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  
+  const { email, name } = req.body;
+
+  if (!email || !name) {
+    throw new CustomError.BadRequestError("please provide name and email");
+  }
+
+  const user = await User.findOneAndUpdate(
+    { _id: req.user.userId },
+    { email, name },
+    { new: true, runValidators: true, returnDocument: true },
+  );
+
+  if (!user) {
+    throw new CustomError.NotFoundError("User not found");
+  }
+
+  res.status(StatusCodes.OK).json({ user });
 };
 
 const updateUserPassword = async (req, res) => {
@@ -47,7 +63,7 @@ const updateUserPassword = async (req, res) => {
 
   await user.save();
 
-  res.status(StatusCodes.OK).json({msg: 'Success! Password Updated.'});
+  res.status(StatusCodes.OK).json({ msg: "Success! Password Updated." });
 };
 
 module.exports = {
