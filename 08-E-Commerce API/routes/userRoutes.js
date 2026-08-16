@@ -13,13 +13,18 @@ const {
 
 const router = Router();
 
-router.get("/", authenticateUser, authorizePermissions, getAllUser);
+router.get("/", authenticateUser, authorizePermissions("admin"), getAllUser);
 
 router.get("/showMe", showCurrentUser);
 
 router.patch("/updateUser", updateUser);
 router.patch("/updateUserPassword", updateUserPassword);
 
-router.get("/:id", authenticateUser, authorizePermissions,getSingleUser);
+router.get(
+  "/:id",
+  authenticateUser,
+  authorizePermissions("admin"),
+  getSingleUser,
+);
 
 module.exports = router;
