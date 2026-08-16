@@ -25,7 +25,7 @@ const showCurrentUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  res.send("updated user");
+  
 };
 
 const updateUserPassword = async (req, res) => {
