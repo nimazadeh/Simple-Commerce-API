@@ -61,7 +61,7 @@ const updateUserPassword = async (req, res) => {
 
   const user = await User.findOne({ _id: req.user.userId });
 
-  const isPasswordCorrect = user.comparePassword(oldPassword);
+  const isPasswordCorrect = await user.comparePassword(oldPassword);
 
   if (!isPasswordCorrect) {
     throw new CustomError.UnauthenticatedError("Invalid credential");
