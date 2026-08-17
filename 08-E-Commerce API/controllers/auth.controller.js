@@ -40,7 +40,7 @@ const login = async (req, res) => {
   const isPasswordCorrect = await user.comparePassword(password);
 
   if (!isPasswordCorrect) {
-    throw new CustomError.UnauthenticatedError("Invalid Credentials");
+    throw new CustomError.UnauthenticatedError("Invalid Credentials!");
   }
 
   const tokenUser = createTokenUser(user);
