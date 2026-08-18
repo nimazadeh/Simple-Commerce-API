@@ -1,5 +1,7 @@
 require("dotenv").config();
 const express = require("express");
+const fileUpload = require("express-fileupload");
+
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const connectDB = require("./db/connect");
@@ -16,6 +18,8 @@ const app = express();
 // ===============================
 app.use(morgan("tiny"));
 app.use(express.json());
+app.use(express.static("./public"));
+app.use(fileUpload());
 app.use(cookieParser(process.env.JWT_SECRET));
 
 // ===============================
