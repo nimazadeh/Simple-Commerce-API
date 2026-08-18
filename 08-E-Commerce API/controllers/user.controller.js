@@ -49,7 +49,7 @@ const updateUser = async (req, res) => {
   user.name = name;
 
   // create user
-  user.save();
+  await user.save();
 
   const tokenUser = createTokenUser(user);
 
