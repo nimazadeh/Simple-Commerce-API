@@ -48,10 +48,12 @@ const updateProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
   const { id: productID } = req.params;
 
-  const product = await Product.findByIdAndDelete({ _id: productID });
+  const product = await Product.findOne({ _id: productID });
 
   if (!product)
     throw new CustomError.NotFoundError(`No product with id : ${productID}`);
+
+  await product.deleteOne();
 
   res.status(StatusCodes.OK).json({ msg: "Success! Product Removed." });
 };
