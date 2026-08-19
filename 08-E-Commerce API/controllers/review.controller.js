@@ -1,9 +1,8 @@
 const { StatusCodes } = require("http-status-codes");
 const Product = require("../models/Product");
-
+const Review = require("../models/Review");
 const CustomError = require("../errors");
 const { checkPermissions } = require("../utils");
-const Review = require("../models/Review");
 
 const createReview = async (req, res) => {
   const { product: productId } = req.body;
@@ -26,25 +25,64 @@ const createReview = async (req, res) => {
   req.body.user = req.user.userId;
 
   const review = await Review.create(req.body);
-  
+
   res.status(StatusCodes.CREATED).json({ review });
 };
 
 const getAllReviews = async (req, res) => {
-  const reviews = await Review.find({});
+  const reviews = await Review.find({}).populate({
+    path: "product",
+    select: "name, company price",
+  });
+  
   res.status(StatusCodes.OK).json({ count: reviews.length, reviews });
 };
 
 const getSingleReview = async (req, res) => {
-  res.send("get single review");
+  const { id: reviewId } = req.params;
+
+  const review = await Review.findOne({ _id: reviewId });
+
+  if (!review)
+    throw new CustomError.NotFoundError(`No product with id : ${productId}`);
+
+  res.status(StatusCodes.OK).json({ review });
 };
 
 const updateReview = async (req, res) => {
-  res.send("update review");
+  const { id: reviewId } = req.params;
+
+  const { rating, title, comment } = req.body;
+
+  const review = await Review.findOne({ _id: reviewId });
+
+  if (!review)
+    throw new CustomError.NotFoundError(`No product with id : ${productId}`);
+
+  checkPermissions(req.user, review.user);
+
+  review.rating = rating;
+  review.title = title;
+  review.comment = comment;
+
+  await review.save();
+
+  res.status(StatusCodes.OK).json({ msg: "Success! Review Updated", review });
 };
 
 const deleteReview = async (req, res) => {
-  res.send("delete review");
+  const { id: reviewId } = req.params;
+
+  const review = await Review.findOne({ _id: reviewId });
+
+  if (!review)
+    throw new CustomError.NotFoundError(`No product with id : ${productId}`);
+
+  checkPermissions(req.user, review.user);
+
+  await review.remove();
+
+  res.status(StatusCodes.OK).json({ msg: "Success! Review removed" });
 };
 
 module.exports = {
