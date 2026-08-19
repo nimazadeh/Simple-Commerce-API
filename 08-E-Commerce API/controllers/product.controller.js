@@ -53,6 +53,10 @@ const deleteProduct = async (req, res) => {
   if (!product)
     throw new CustomError.NotFoundError(`No product with id : ${productID}`);
 
+  await Review.deleteMany({
+    product: product._id,
+  });
+
   await product.deleteOne();
 
   res.status(StatusCodes.OK).json({ msg: "Success! Product Removed." });
