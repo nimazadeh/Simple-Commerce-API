@@ -87,19 +87,10 @@ const uploadImage = async (req, res) => {
   res.status(StatusCodes.OK).json({ image: `/uploads/${productImage.name}` });
 };
 
-const getSingleProductReviews = async (req, res) => {
-  const { id: productId } = req.params;
-
-  const reviews = await Review.find({ product: productId });
-
-  res.status(StatusCodes.OK).json({ reviews, count: reviews.length });
-};
-
 module.exports = {
   createProduct,
   getAllProducts,
   getSingleProduct,
-  getSingleProductReviews,
   updateProduct,
   deleteProduct,
   uploadImage,
